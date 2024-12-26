@@ -101,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (gameActive && !mole.classList.contains('caught')) {
                 score += points;
                 scoreDisplay.textContent = score;
-                mole.classList.add('caught');
                 
                 // 히트 이펙트 생성
                 createHitEffect(e.pageX, e.pageY, points);
@@ -112,13 +111,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     playSound(hitSoundNormal); // catch_1.mp3
                 }
+
+                // 맞았을 때 이미지 변경
+                mole.className = 'mole caught';
                 
                 setTimeout(() => {
-                    mole.style.bottom = '-100%';
-                    setTimeout(() => {
-                        mole.remove();
-                    }, 200);
-                }, 300);
+                    if (mole.parentNode) {
+                        mole.style.bottom = '-100%';
+                        setTimeout(() => {
+                            if (mole.parentNode) {
+                                mole.remove();
+                            }
+                        }, 200);
+                    }
+                }, 500);
             }
         };
 
