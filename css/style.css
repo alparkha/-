@@ -103,17 +103,6 @@ h1 {
         0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.dirt {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 30%;
-    background: linear-gradient(to bottom, #343a40, #212529);
-    border-radius: 50% 50% 0 0;
-    z-index: 2;
-}
-
 .mole {
     position: absolute;
     left: 50%;
@@ -126,7 +115,6 @@ h1 {
     bottom: -100%;
     transition: all 0.1s ease-out;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-    z-index: 1;
 }
 
 .mole.visible {
