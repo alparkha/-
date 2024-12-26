@@ -1,0 +1,75 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.game-container {
+    text-align: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.score-board {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.hole {
+    background-color: #8B4513;
+    height: 150px;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.mole {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    bottom: -100%;
+    transition: bottom 0.2s;
+}
+
+.mole.slow {
+    background-image: url('../images/mole1_slow.png');
+}
+
+.mole.fast {
+    background-image: url('../images/mole2_fast.png');
+}
+
+.mole.veryfast {
+    background-image: url('../images/mole3_veryfast.png');
+}
+
+.mole.caught {
+    background-image: url('../images/mole4_caught.png');
+}
+
+#start-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>두더지 잡기 게임</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>두더지 잡기 게임</h1>
+        <div class="score-board">
+            <span>점수: <span id="score">0</span></span>
+            <span>시간: <span id="time">30</span>초</span>
+        </div>
+        <div class="game-board">
+            <div class="hole" data-index="0"></div>
+            <div class="hole" data-index="1"></div>
+            <div class="hole" data-index="2"></div>
+            <div class="hole" data-index="3"></div>
+            <div class="hole" data-index="4"></div>
+            <div class="hole" data-index="5"></div>
+            <div class="hole" data-index="6"></div>
+            <div class="hole" data-index="7"></div>
+            <div class="hole" data-index="8"></div>
+        </div>
+        <button id="start-btn">게임 시작</button>
+    </div>
+    <script src="js/game.js"></script>
+</body>
+</html>
