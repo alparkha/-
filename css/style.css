@@ -149,7 +149,7 @@ h1 {
     100% { transform: translateX(-50%); }
 }
 
-.mole.slow {
+.mole.normal {
     background-image: url('../images/mole1_slow.png');
 }
 

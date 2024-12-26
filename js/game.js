@@ -15,19 +15,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const SOUND_POOL_SIZE = 5;  // 각 효과음당 5개의 오디오 객체
     const soundPool = {
         normal: Array.from({ length: SOUND_POOL_SIZE }, () => {
-            const audio = new Audio('sounds/catch_1.mp3');
-            audio.volume = 0.6;  // 볼륨 조절
+            const audio = new Audio('sounds/catch.mp3');
+            audio.volume = 0.4;  // 볼륨 낮춤
+            return audio;
+        }),
+        fast: Array.from({ length: SOUND_POOL_SIZE }, () => {
+            const audio = new Audio('sounds/catch.mp3');
+            audio.volume = 0.4;  // 볼륨 낮춤
             return audio;
         }),
         veryfast: Array.from({ length: SOUND_POOL_SIZE }, () => {
-            const audio = new Audio('sounds/catch.mp3');
-            audio.volume = 0.6;  // 볼륨 조절
+            const audio = new Audio('sounds/catch_1.mp3');
+            audio.volume = 0.4;  // 볼륨 낮춤
             return audio;
         })
     };
 
     let currentSoundIndex = {
         normal: 0,
+        fast: 0,
         veryfast: 0
     };
 
@@ -59,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function playSound(sound) {
         if (!sfxEnabled) return;
 
-        if (sound === 'normal' || sound === 'veryfast') {
+        if (sound === 'normal' || sound === 'fast' || sound === 'veryfast') {
             // 사운드 풀에서 다음 사용 가능한 오디오 객체 가져오기
             const pool = soundPool[sound];
             const audio = pool[currentSoundIndex[sound]];
@@ -160,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 points = 75;
                 duration = 700;  // 0.7초
             } else {
-                randomType = 'slow';
+                randomType = 'normal';
                 points = 50;
                 duration = 1000; // 1초
             }
@@ -186,11 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 createHitEffect(centerX, centerY, points);
                 
                 // 두더지 타입에 따른 효과음 재생
-                if (randomType === 'veryfast') {
-                    playSound('veryfast');
-                } else {
-                    playSound('normal');
-                }
+                playSound(randomType);  // 직접 타입 이름으로 재생
 
                 // 맞았을 때 이미지 변경
                 mole.classList.add('caught');
