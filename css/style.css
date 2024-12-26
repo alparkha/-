@@ -139,7 +139,6 @@ h1 {
     background-image: url('../images/mole4_caught.png') !important;
     background-position: center bottom;
     background-size: 84%;
-    transform: translateX(-50%);
     animation: gentleWobble 0.5s ease-in-out;
 }
 
@@ -151,15 +150,15 @@ h1 {
 }
 
 .mole.slow {
-    background-image: url('../images/mole1_slow.png');
+    background-image: url('../images/mole4_normal.png');
 }
 
 .mole.fast {
-    background-image: url('../images/mole2_fast.png');
+    background-image: url('../images/mole4_fast.png');
 }
 
 .mole.veryfast {
-    background-image: url('../images/mole3_veryfast.png');
+    background-image: url('../images/mole4_veryfast.png');
 }
 
 .rainbow-btn {

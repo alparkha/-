@@ -107,18 +107,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (random < 0.2) {
                 randomType = 'veryfast';
                 points = 125;
-                duration = 600;  // 0.6초
+                duration = 500;  // 0.5초
             } else if (random < 0.5) {
                 randomType = 'fast';
                 points = 75;
-                duration = 800;  // 0.8초
+                duration = 700;  // 0.7초
             } else {
                 randomType = 'slow';
                 points = 50;
-                duration = 1200; // 1.2초
+                duration = 1000; // 1초
             }
 
             activeMoles++;
+            mole.classList.remove('slow', 'fast', 'veryfast', 'caught');
             mole.classList.add(randomType);
             mole.classList.add('visible');
 
@@ -139,9 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 두더지 타입에 따른 효과음 재생
                 if (randomType === 'veryfast') {
-                    playSound(hitSoundVeryfast); // catch_1.mp3
+                    playSound(hitSoundNormal);
                 } else {
-                    playSound(hitSoundNormal);   // catch.mp3
+                    playSound(hitSoundVeryfast);
                 }
 
                 // 맞았을 때 이미지 변경
@@ -149,7 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 activeMoles--;
                 
                 setTimeout(() => {
-                    mole.classList.remove('visible', 'caught', randomType);
+                    if (mole.classList.contains('caught')) {
+                        mole.classList.remove('visible', 'caught', randomType);
+                    }
                 }, 500);
 
                 // 이벤트 리스너 제거
@@ -170,8 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }, duration);
         }
 
-        // 다음 두더지 출현 (0.8~1.5초 사이)
-        timeoutId = setTimeout(showMole, Math.random() * 700 + 800);
+        // 다음 두더지 출현 (0.5~1초 사이)
+        timeoutId = setTimeout(showMole, Math.random() * 500 + 500);
     };
 
     function startGame() {
