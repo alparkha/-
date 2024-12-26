@@ -116,8 +116,8 @@ h1 {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-size: 90%;
-    background-position: center bottom;
+    background-size: 140%;
+    background-position: center 95%;
     background-repeat: no-repeat;
     bottom: -100%;
     transition: all 0.1s ease-out;
@@ -268,6 +268,11 @@ h1 {
     .sound-btn {
         font-size: 1.5em;
         padding: 10px 15px;
+    }
+
+    .mole {
+        background-size: 130%;
+        background-position: center 90%;
     }
 }
 

@@ -99,21 +99,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const handleClick = (e) => {
             if (gameActive && !mole.classList.contains('caught')) {
+                // 즉시 효과음 재생
+                if (randomType === 'veryfast') {
+                    playSound(hitSoundNormal); // catch_1.mp3
+                } else {
+                    playSound(hitSoundVeryfast); // catch.mp3
+                }
+
                 score += points;
                 scoreDisplay.textContent = score;
                 
                 // 히트 이펙트 생성
                 createHitEffect(e.pageX, e.pageY, points);
                 
-                // 두더지 타입에 따른 효과음 재생
-                if (randomType === 'veryfast') {
-                    playSound(hitSoundVeryfast); // 매우 빠른 두더지: catch.mp3
-                } else if (randomType === 'fast') {
-                    playSound(hitSoundNormal); // 빠른 두더지: catch_1.mp3
-                } else {
-                    playSound(hitSoundNormal); // 느린 두더지: catch_1.mp3
-                }
-
                 // 맞았을 때 이미지 변경
                 mole.style.backgroundImage = "url('images/mole4_caught.png')";
                 mole.classList.add('caught');
