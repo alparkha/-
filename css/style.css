@@ -150,15 +150,15 @@ h1 {
 }
 
 .mole.slow {
-    background-image: url('../images/mole4_normal.png');
+    background-image: url('../images/mole1_slow.png');
 }
 
 .mole.fast {
-    background-image: url('../images/mole4_fast.png');
+    background-image: url('../images/mole2_fast.png');
 }
 
 .mole.veryfast {
-    background-image: url('../images/mole4_veryfast.png');
+    background-image: url('../images/mole3_veryfast.png');
 }
 
 .rainbow-btn {

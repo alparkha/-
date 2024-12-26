@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let timeLeft = 30;
     let bgmPlaying = false;
+    let sfxEnabled = true;  // 추가: sfxEnabled 변수 선언
     let activeMoles = 0;
     const MAX_ACTIVE_MOLES = 3;
 
@@ -38,9 +39,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function playSound(sound) {
-        if (sfxEnabled && sound !== bgm) {
+        if (sfxEnabled && sound) {  
             sound.currentTime = 0;
-            sound.play();
+            let playPromise = sound.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Audio play failed:", error);
+                });
+            }
         }
     }
 
