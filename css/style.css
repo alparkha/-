@@ -232,8 +232,8 @@ h1 {
     }
 }
 
-/* PC 화면 대응 */
-@media (min-width: 768px) {
+/* 태블릿 화면 대응 */
+@media (min-width: 768px) and (max-width: 1199px) {
     .game-container {
         padding: 30px;
         max-width: 800px;
@@ -271,12 +271,12 @@ h1 {
     }
 
     .mole {
-        background-size: 85%;
+        background-size: 62%;
         background-position: center 85%;
     }
 }
 
-/* 더 큰 화면 대응 */
+/* PC 화면 대응 */
 @media (min-width: 1200px) {
     .mole {
         background-size: 85%;
