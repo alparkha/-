@@ -2,29 +2,59 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>두더지 잡기 게임</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>귀요미 강인 두더지 잡기</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="game-container">
-        <h1>두더지 잡기 게임</h1>
+        <h1>🦔 귀요미 강인 두더지 잡기 🦔</h1>
         <div class="score-board">
-            <span>점수: <span id="score">0</span></span>
-            <span>시간: <span id="time">30</span>초</span>
+            <div class="score-item">
+                <span class="label">점수</span>
+                <span id="score">0</span>
+            </div>
+            <div class="score-item">
+                <span class="label">남은 시간</span>
+                <span id="time">30</span>초
+            </div>
         </div>
         <div class="game-board">
-            <div class="hole" data-index="0"></div>
-            <div class="hole" data-index="1"></div>
-            <div class="hole" data-index="2"></div>
-            <div class="hole" data-index="3"></div>
-            <div class="hole" data-index="4"></div>
-            <div class="hole" data-index="5"></div>
-            <div class="hole" data-index="6"></div>
-            <div class="hole" data-index="7"></div>
-            <div class="hole" data-index="8"></div>
+            <div class="hole" data-index="0"><div class="dirt"></div></div>
+            <div class="hole" data-index="1"><div class="dirt"></div></div>
+            <div class="hole" data-index="2"><div class="dirt"></div></div>
+            <div class="hole" data-index="3"><div class="dirt"></div></div>
+            <div class="hole" data-index="4"><div class="dirt"></div></div>
+            <div class="hole" data-index="5"><div class="dirt"></div></div>
+            <div class="hole" data-index="6"><div class="dirt"></div></div>
+            <div class="hole" data-index="7"><div class="dirt"></div></div>
+            <div class="hole" data-index="8"><div class="dirt"></div></div>
         </div>
-        <button id="start-btn">게임 시작</button>
+        <button id="start-btn" class="rainbow-btn">게임 시작!</button>
+        <div class="sound-control">
+            <button id="bgm-toggle" class="sound-btn">🎵</button>
+            <button id="sfx-toggle" class="sound-btn">🔊</button>
+        </div>
     </div>
+    
+    <!-- Audio Elements -->
+    <audio id="bgm" loop autoplay>
+        <source src="sounds/background.mp3" type="audio/mp3">
+    </audio>
+    <audio id="hit-sound-normal">
+        <source src="sounds/catch_1.mp3" type="audio/mp3">
+    </audio>
+    <audio id="hit-sound-veryfast">
+        <source src="sounds/catch.mp3" type="audio/mp3">
+    </audio>
+    <audio id="countdown-sound">
+        <source src="sounds/5sec.mp3" type="audio/mp3">
+    </audio>
+    <audio id="game-over">
+        <source src="sounds/end.mp3" type="audio/mp3">
+    </audio>
+    
     <script src="js/game.js"></script>
 </body>
 </html>
