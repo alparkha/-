@@ -125,14 +125,14 @@ h1 {
     background-size: contain;
     background-position: center bottom;
     background-repeat: no-repeat;
-    bottom: -100%;
+    bottom: -85%;
     transition: all 0.2s ease-out;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     pointer-events: none;
 }
 
 .mole.visible {
-    bottom: -10%;
+    bottom: 5%;
 }
 
 .mole.caught {

@@ -107,15 +107,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (random < 0.2) {
                 randomType = 'veryfast';
                 points = 125;
-                duration = 1200;
+                duration = 600;  // 0.6초
             } else if (random < 0.5) {
                 randomType = 'fast';
                 points = 75;
-                duration = 1500;
+                duration = 800;  // 0.8초
             } else {
                 randomType = 'slow';
                 points = 50;
-                duration = 2000;
+                duration = 1200; // 1.2초
             }
 
             activeMoles++;
@@ -139,9 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 두더지 타입에 따른 효과음 재생
                 if (randomType === 'veryfast') {
-                    playSound(hitSoundNormal);
+                    playSound(hitSoundVeryfast); // catch_1.mp3
                 } else {
-                    playSound(hitSoundVeryfast);
+                    playSound(hitSoundNormal);   // catch.mp3
                 }
 
                 // 맞았을 때 이미지 변경
@@ -170,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }, duration);
         }
 
-        // 다음 두더지 출현 (1~2초 사이)
-        timeoutId = setTimeout(showMole, Math.random() * 1000 + 1000);
+        // 다음 두더지 출현 (0.8~1.5초 사이)
+        timeoutId = setTimeout(showMole, Math.random() * 700 + 800);
     };
 
     function startGame() {
