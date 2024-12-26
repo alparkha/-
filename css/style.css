@@ -113,7 +113,7 @@ h1 {
     background-position: center bottom;
     background-repeat: no-repeat;
     bottom: -100%;
-    transition: all 0.1s ease-out;
+    transition: all 0.2s ease-out;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
@@ -125,10 +125,15 @@ h1 {
     background-image: url('../images/mole4_caught.png') !important;
     background-position: center center;
     background-size: 84%;
-    bottom: 8%;
-    left: 50%;
-    transform: translateX(-50%);
-    animation: wobble 0.5s ease-in-out;
+    transform: translateX(-50%) scale(0.95);
+    animation: gentleWobble 0.5s ease-in-out;
+}
+
+@keyframes gentleWobble {
+    0% { transform: translateX(-50%) scale(0.95); }
+    25% { transform: translateX(-52%) scale(0.95); }
+    75% { transform: translateX(-48%) scale(0.95); }
+    100% { transform: translateX(-50%) scale(0.95); }
 }
 
 .mole.slow {

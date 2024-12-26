@@ -63,17 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const showMole = () => {
         if (!gameActive) return;
 
-        // 이전 두더지 제거
-        const moles = document.querySelectorAll('.mole');
-        moles.forEach(mole => {
-            if (mole.classList.contains('visible')) {
-                mole.classList.remove('visible');
-                mole.classList.remove('slow');
-                mole.classList.remove('fast');
-                mole.classList.remove('veryfast');
-            }
-        });
-
         // 2~3마리의 두더지를 동시에 출현
         const numMoles = Math.random() < 0.5 ? 2 : 3;
         const availableHoles = Array.from({length: 9}, (_, i) => i);
@@ -89,6 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const hole = document.querySelector(`.hole[data-index="${holeIndex}"]`);
             const mole = hole.querySelector('.mole');
             
+            // 이미 visible 상태인 두더지는 건너뛰기
+            if (mole.classList.contains('visible')) {
+                continue;
+            }
+
             // 두더지 타입 결정
             const random = Math.random();
             let randomType;
@@ -98,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (random < 0.2) {
                 randomType = 'veryfast';
                 points = 125;
-                duration = 1200; // 매우 빠른 두더지의 지속 시간을 1.2초로 증가
+                duration = 1200;
             } else if (random < 0.5) {
                 randomType = 'fast';
                 points = 75;
@@ -122,24 +116,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // 두더지 타입에 따른 효과음 재생
                     if (randomType === 'veryfast') {
-                        playSound(hitSoundNormal); // catch_1.mp3
+                        playSound(hitSoundNormal);
                     } else {
-                        playSound(hitSoundVeryfast); // catch.mp3
+                        playSound(hitSoundVeryfast);
                     }
 
                     // 맞았을 때 이미지 변경
-                    mole.style.backgroundImage = "url('images/mole4_caught.png')";
                     mole.classList.add('caught');
                     
                     setTimeout(() => {
-                        if (mole.parentNode) {
-                            mole.style.bottom = '-100%';
-                            setTimeout(() => {
-                                if (mole.parentNode) {
-                                    mole.remove();
-                                }
-                            }, 200);
-                        }
+                        mole.classList.remove('visible');
+                        mole.classList.remove('caught');
+                        mole.classList.remove(randomType);
                     }, 500);
                 }
             };
@@ -155,24 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }, duration);
         }
 
-        // 다음 두더지 출현
-        timeoutId = setTimeout(showMole, Math.random() * 1000 + 500);
+        // 다음 두더지 출현 (1.5~2.5초 사이)
+        timeoutId = setTimeout(showMole, Math.random() * 1000 + 1500);
     };
-
-    function updateTimer() {
-        timeLeft--;
-        timeDisplay.textContent = timeLeft;
-
-        // 5초 카운트다운 시작
-        if (timeLeft <= 5 && !countdownStarted) {
-            countdownStarted = true;
-            playSound(countdownSound);
-        }
-
-        if (timeLeft <= 0) {
-            endGame();
-        }
-    }
 
     function startGame() {
         if (!gameActive) {
@@ -193,6 +166,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             timer = setInterval(updateTimer, 1000);
             showMole();
+        }
+    }
+
+    function updateTimer() {
+        timeLeft--;
+        timeDisplay.textContent = timeLeft;
+
+        // 5초 카운트다운 시작
+        if (timeLeft <= 5 && !countdownStarted) {
+            countdownStarted = true;
+            playSound(countdownSound);
+        }
+
+        if (timeLeft <= 0) {
+            endGame();
         }
     }
 
