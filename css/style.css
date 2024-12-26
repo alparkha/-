@@ -135,10 +135,25 @@ h1 {
     bottom: 5%;
 }
 
+.mole.normal {
+    background-image: url('../images/mole1_slow.png');
+    background-size: 96%;
+}
+
+.mole.fast {
+    background-image: url('../images/mole2_fast.png');
+    background-size: 96%;
+}
+
+.mole.veryfast {
+    background-image: url('../images/mole3_veryfast.png');
+    background-size: 84%;  
+}
+
 .mole.caught {
     background-image: url('../images/mole4_caught.png') !important;
     background-position: center bottom;
-    background-size: 84%;
+    background-size: 96%;
     animation: gentleWobble 0.5s ease-in-out;
 }
 
@@ -149,16 +164,26 @@ h1 {
     100% { transform: translateX(-50%); }
 }
 
-.mole.normal {
-    background-image: url('../images/mole1_slow.png');
+@keyframes wobble {
+    0% { transform: translateX(0); }
+    15% { transform: translateX(-10px) rotate(-5deg); }
+    30% { transform: translateX(8px) rotate(4deg); }
+    45% { transform: translateX(-6px) rotate(-2deg); }
+    60% { transform: translateX(4px) rotate(1deg); }
+    75% { transform: translateX(-2px) rotate(-1deg); }
+    100% { transform: translateX(0); }
 }
 
-.mole.fast {
-    background-image: url('../images/mole2_fast.png');
-}
-
-.mole.veryfast {
-    background-image: url('../images/mole3_veryfast.png');
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .rainbow-btn {
@@ -223,28 +248,6 @@ h1 {
     100% { 
         transform: translate(-50%, -100%) scale(1.5);
         opacity: 0;
-    }
-}
-
-@keyframes wobble {
-    0% { transform: translateX(0); }
-    15% { transform: translateX(-10px) rotate(-5deg); }
-    30% { transform: translateX(8px) rotate(4deg); }
-    45% { transform: translateX(-6px) rotate(-2deg); }
-    60% { transform: translateX(4px) rotate(1deg); }
-    75% { transform: translateX(-2px) rotate(-1deg); }
-    100% { transform: translateX(0); }
-}
-
-@keyframes gradient {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
     }
 }
 

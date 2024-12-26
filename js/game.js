@@ -264,24 +264,28 @@ document.addEventListener('DOMContentLoaded', () => {
     function endGame() {
         gameActive = false;
         clearTimeout(timeoutId);
-        clearInterval(timer);
         
-        // 모든 두더지 제거
+        // 게임 종료 효과음 재생
+        if (sfxEnabled) {
+            gameOverSound.volume = 0.4;  // 볼륨 조정
+            gameOverSound.play().catch(error => {
+                console.log("Game over sound failed:", error);
+            });
+        }
+
+        // 모든 두더지 숨기기
         document.querySelectorAll('.mole').forEach(mole => {
-            mole.classList.remove('visible', 'caught', 'slow', 'fast', 'veryfast');
+            mole.classList.remove('visible', 'normal', 'fast', 'veryfast', 'caught');
         });
-        
-        activeMoles = 0;
-        bgm.pause();
-        bgm.currentTime = 0;
-        bgmPlaying = false;
-        playSound(gameOverSound);
-        
+
+        // 최종 점수 표시
+        const finalScore = score;
         setTimeout(() => {
-            alert(`게임 종료!\n당신의 점수는 ${score}점입니다! 🎉`);
+            alert(`게임 종료! 최종 점수: ${finalScore}점`);
+            startBtn.textContent = '다시 시작!';
             startBtn.disabled = false;
-            startBtn.textContent = '게임 시작!';
-        }, 500);
+            startBtn.classList.remove('disabled');
+        }, 500);  // 게임 종료 효과음이 재생된 후 결과 표시
     }
 
     startBtn.addEventListener('click', startGame);
