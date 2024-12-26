@@ -8,10 +8,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 오디오 요소들
     const bgm = document.getElementById('bgm');
-    const hitSoundNormal = document.getElementById('hit-sound-normal');
-    const hitSoundVeryfast = document.getElementById('hit-sound-veryfast');
     const countdownSound = document.getElementById('countdown-sound');
     const gameOverSound = document.getElementById('game-over');
+
+    // 사운드 풀 생성
+    const SOUND_POOL_SIZE = 5;  // 각 효과음당 5개의 오디오 객체
+    const soundPool = {
+        normal: Array.from({ length: SOUND_POOL_SIZE }, () => {
+            const audio = new Audio('sounds/catch_1.mp3');
+            audio.volume = 0.6;  // 볼륨 조절
+            return audio;
+        }),
+        veryfast: Array.from({ length: SOUND_POOL_SIZE }, () => {
+            const audio = new Audio('sounds/catch.mp3');
+            audio.volume = 0.6;  // 볼륨 조절
+            return audio;
+        })
+    };
+
+    let currentSoundIndex = {
+        normal: 0,
+        veryfast: 0
+    };
 
     let timeoutId = null;
     let gameActive = false;
@@ -39,7 +57,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function playSound(sound) {
-        if (sfxEnabled && sound) {  
+        if (!sfxEnabled) return;
+
+        if (sound === 'normal' || sound === 'veryfast') {
+            // 사운드 풀에서 다음 사용 가능한 오디오 객체 가져오기
+            const pool = soundPool[sound];
+            const audio = pool[currentSoundIndex[sound]];
+            
+            // 재생 중이지 않은 경우에만 재생
+            if (audio.paused || audio.ended) {
+                audio.currentTime = 0;
+                let playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Audio play failed:", error);
+                    });
+                }
+            }
+
+            // 다음 인덱스로 순환
+            currentSoundIndex[sound] = (currentSoundIndex[sound] + 1) % SOUND_POOL_SIZE;
+        } else if (sound) {
+            // 기타 사운드(BGM, 카운트다운 등)는 그대로 재생
             sound.currentTime = 0;
             let playPromise = sound.play();
             
@@ -147,9 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 두더지 타입에 따른 효과음 재생
                 if (randomType === 'veryfast') {
-                    playSound(hitSoundNormal);
+                    playSound('veryfast');
                 } else {
-                    playSound(hitSoundVeryfast);
+                    playSound('normal');
                 }
 
                 // 맞았을 때 이미지 변경
