@@ -13,20 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const countdownSound = document.getElementById('countdown-sound');
     const gameOverSound = document.getElementById('game-over');
 
+    let timeoutId = null;
+    let gameActive = false;
     let score = 0;
     let timeLeft = 30;
-    let gameActive = false;
-    let timer;
-    let bgmEnabled = true;
-    let sfxEnabled = true;
-    let countdownStarted = false;
-    let timeoutId = null;
+    let bgmPlaying = false;
+    let activeMoles = 0;
+    const MAX_ACTIVE_MOLES = 3;
 
     // 사운드 컨트롤
     function toggleBGM() {
-        bgmEnabled = !bgmEnabled;
+        bgmPlaying = !bgmPlaying;
         bgmToggle.classList.toggle('muted');
-        if (bgmEnabled) {
+        if (bgmPlaying) {
             bgm.play();
         } else {
             bgm.pause();
@@ -63,26 +62,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const showMole = () => {
         if (!gameActive) return;
 
-        // 2~3마리의 두더지를 동시에 출현
-        const numMoles = Math.random() < 0.5 ? 2 : 3;
-        const availableHoles = Array.from({length: 9}, (_, i) => i);
+        // 현재 활성화된 두더지가 너무 많으면 대기
+        if (activeMoles >= MAX_ACTIVE_MOLES) {
+            timeoutId = setTimeout(showMole, 500);
+            return;
+        }
+
+        // 1~2마리의 두더지를 출현
+        const numMoles = Math.random() < 0.7 ? 1 : 2;
+        const availableHoles = [];
         
-        for (let i = 0; i < numMoles; i++) {
-            if (availableHoles.length === 0) break;
-            
-            // 랜덤한 구멍 선택
+        // 사용 가능한 구멍 찾기
+        document.querySelectorAll('.hole').forEach((hole, index) => {
+            const mole = hole.querySelector('.mole');
+            if (!mole.classList.contains('visible')) {
+                availableHoles.push(index);
+            }
+        });
+
+        // 사용 가능한 구멍이 없으면 대기
+        if (availableHoles.length === 0) {
+            timeoutId = setTimeout(showMole, 500);
+            return;
+        }
+
+        // 실제로 출현시킬 두더지 수 조정
+        const actualNumMoles = Math.min(numMoles, availableHoles.length, MAX_ACTIVE_MOLES - activeMoles);
+        
+        for (let i = 0; i < actualNumMoles; i++) {
             const randomIndex = Math.floor(Math.random() * availableHoles.length);
             const holeIndex = availableHoles[randomIndex];
             availableHoles.splice(randomIndex, 1);
 
             const hole = document.querySelector(`.hole[data-index="${holeIndex}"]`);
             const mole = hole.querySelector('.mole');
+            const hitbox = hole.querySelector('.mole-hitbox');
             
-            // 이미 visible 상태인 두더지는 건너뛰기
-            if (mole.classList.contains('visible')) {
-                continue;
-            }
-
             // 두더지 타입 결정
             const random = Math.random();
             let randomType;
@@ -96,55 +111,67 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (random < 0.5) {
                 randomType = 'fast';
                 points = 75;
-                duration = 1000;
+                duration = 1500;
             } else {
                 randomType = 'slow';
                 points = 50;
-                duration = 1500;
+                duration = 2000;
             }
 
+            activeMoles++;
             mole.classList.add(randomType);
             mole.classList.add('visible');
 
             const handleClick = (e) => {
-                if (gameActive && !mole.classList.contains('caught')) {
-                    score += points;
-                    scoreDisplay.textContent = score;
-                    
-                    // 히트 이펙트 생성
-                    createHitEffect(e.pageX, e.pageY, points);
-                    
-                    // 두더지 타입에 따른 효과음 재생
-                    if (randomType === 'veryfast') {
-                        playSound(hitSoundNormal);
-                    } else {
-                        playSound(hitSoundVeryfast);
-                    }
-
-                    // 맞았을 때 이미지 변경
-                    mole.classList.add('caught');
-                    
-                    setTimeout(() => {
-                        mole.classList.remove('visible');
-                        mole.classList.remove('caught');
-                        mole.classList.remove(randomType);
-                    }, 500);
+                if (!gameActive || !mole.classList.contains('visible') || mole.classList.contains('caught')) {
+                    return;
                 }
+
+                e.preventDefault();
+                score += points;
+                scoreDisplay.textContent = score;
+                
+                // 히트 이펙트 생성
+                const rect = hitbox.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                createHitEffect(centerX, centerY, points);
+                
+                // 두더지 타입에 따른 효과음 재생
+                if (randomType === 'veryfast') {
+                    playSound(hitSoundNormal);
+                } else {
+                    playSound(hitSoundVeryfast);
+                }
+
+                // 맞았을 때 이미지 변경
+                mole.classList.add('caught');
+                activeMoles--;
+                
+                setTimeout(() => {
+                    mole.classList.remove('visible', 'caught', randomType);
+                }, 500);
+
+                // 이벤트 리스너 제거
+                hitbox.removeEventListener('mousedown', handleClick);
+                hitbox.removeEventListener('touchstart', handleClick);
             };
 
-            mole.addEventListener('click', handleClick);
-            mole.addEventListener('touchstart', handleClick);
+            // 이벤트 리스너 추가
+            hitbox.addEventListener('mousedown', handleClick);
+            hitbox.addEventListener('touchstart', handleClick);
 
+            // 두더지가 사라질 때
             setTimeout(() => {
-                if (gameActive && mole.classList.contains('visible')) {
-                    mole.classList.remove('visible');
-                    mole.classList.remove(randomType);
+                if (mole.classList.contains('visible') && !mole.classList.contains('caught')) {
+                    mole.classList.remove('visible', randomType);
+                    activeMoles--;
                 }
             }, duration);
         }
 
-        // 다음 두더지 출현 (1.5~2.5초 사이)
-        timeoutId = setTimeout(showMole, Math.random() * 1000 + 1500);
+        // 다음 두더지 출현 (1~2초 사이)
+        timeoutId = setTimeout(showMole, Math.random() * 1000 + 1000);
     };
 
     function startGame() {
@@ -152,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
             gameActive = true;
             score = 0;
             timeLeft = 30;
-            countdownStarted = false;
             scoreDisplay.textContent = score;
             timeDisplay.textContent = timeLeft;
             startBtn.disabled = true;
@@ -160,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 배경음악 초기화 및 재생
             bgm.currentTime = 0;
-            if (bgmEnabled) {
+            if (bgmPlaying) {
                 bgm.play();
             }
 
@@ -174,8 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timeDisplay.textContent = timeLeft;
 
         // 5초 카운트다운 시작
-        if (timeLeft <= 5 && !countdownStarted) {
-            countdownStarted = true;
+        if (timeLeft <= 5) {
             playSound(countdownSound);
         }
 
@@ -186,21 +211,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function endGame() {
         gameActive = false;
-        clearInterval(timer);
         clearTimeout(timeoutId);
+        clearInterval(timer);
         
-        const moles = document.querySelectorAll('.mole');
-        moles.forEach(mole => {
-            if (mole.classList.contains('visible')) {
-                mole.classList.remove('visible');
-                mole.classList.remove('slow');
-                mole.classList.remove('fast');
-                mole.classList.remove('veryfast');
-            }
+        // 모든 두더지 제거
+        document.querySelectorAll('.mole').forEach(mole => {
+            mole.classList.remove('visible', 'caught', 'slow', 'fast', 'veryfast');
         });
-
+        
+        activeMoles = 0;
         bgm.pause();
         bgm.currentTime = 0;
+        bgmPlaying = false;
         playSound(gameOverSound);
         
         setTimeout(() => {
