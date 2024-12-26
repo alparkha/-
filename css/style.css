@@ -1,10 +1,12 @@
+/* 모바일 우선 스타일 */
 body {
     font-family: 'Jua', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
+    padding: 15px;
     background-color: #e74c3c;
     background-image: 
         linear-gradient(45deg, #e74c3c 25%, transparent 25%, transparent 75%, #e74c3c 75%, #e74c3c),
@@ -12,6 +14,7 @@ body {
     background-size: 60px 60px;
     background-position: 0 0, 30px 30px;
     position: relative;
+    touch-action: manipulation;
 }
 
 body::before {
@@ -27,24 +30,25 @@ body::before {
     background-position: 0 0, 30px 30px;
     background-size: 60px 60px;
     opacity: 0.2;
+    pointer-events: none;
 }
 
 .game-container {
     text-align: center;
     background-color: rgba(255, 255, 255, 0.95);
-    padding: 30px;
-    border-radius: 30px;
+    padding: 15px;
+    border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    max-width: 800px;
-    width: 90%;
+    width: 95%;
+    max-width: 500px;
     position: relative;
     backdrop-filter: blur(5px);
 }
 
 h1 {
     color: #e74c3c;
-    font-size: 2.5em;
-    margin-bottom: 30px;
+    font-size: 1.5em;
+    margin: 10px 0 20px;
     text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
@@ -55,15 +59,15 @@ h1 {
 .score-board {
     display: flex;
     justify-content: center;
-    gap: 40px;
-    margin-bottom: 30px;
-    font-size: 1.5em;
+    gap: 20px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
 }
 
 .score-item {
     background-color: #f8f9fa;
-    padding: 15px 25px;
-    border-radius: 20px;
+    padding: 10px 15px;
+    border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     border: 2px solid #e74c3c;
 }
@@ -77,15 +81,13 @@ h1 {
 .game-board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 30px;
-    padding: 25px;
+    gap: 10px;
+    margin: 0 auto 20px;
+    padding: 15px;
     background-color: #f8f9fa;
-    border-radius: 25px;
+    border-radius: 20px;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 400px;
 }
 
 .hole {
@@ -99,11 +101,6 @@ h1 {
     box-shadow: 
         inset 0 5px 15px rgba(0, 0, 0, 0.5),
         0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s;
-}
-
-.hole:hover {
-    transform: scale(1.02);
 }
 
 .dirt {
@@ -119,8 +116,8 @@ h1 {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-size: 70%;
-    background-position: center 90%;
+    background-size: 90%;
+    background-position: center bottom;
     background-repeat: no-repeat;
     bottom: -100%;
     transition: all 0.1s ease-out;
@@ -150,10 +147,10 @@ h1 {
 
 .rainbow-btn {
     font-family: 'Jua', sans-serif;
-    font-size: 1.5em;
-    padding: 15px 40px;
+    font-size: 1.2em;
+    padding: 12px 30px;
     border: none;
-    border-radius: 50px;
+    border-radius: 25px;
     cursor: pointer;
     background: linear-gradient(-45deg, #e74c3c, #e67e22, #f1c40f, #2ecc71);
     background-size: 400% 400%;
@@ -164,17 +161,13 @@ h1 {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.rainbow-btn:hover {
-    transform: scale(1.05);
-}
-
 .sound-control {
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .sound-btn {
-    font-size: 1.5em;
-    padding: 10px 15px;
+    font-size: 1.2em;
+    padding: 8px 12px;
     margin: 0 5px;
     border: none;
     border-radius: 50%;
@@ -239,65 +232,42 @@ h1 {
     }
 }
 
-/* 모바일 대응을 위한 미디어 쿼리 추가 */
-@media (max-width: 768px) {
+/* PC 화면 대응 */
+@media (min-width: 768px) {
     .game-container {
-        padding: 15px;
-        width: 95%;
-    }
-
-    .game-board {
-        gap: 10px;
-        padding: 15px;
+        padding: 30px;
+        max-width: 800px;
     }
 
     h1 {
-        font-size: 1.8em;
+        font-size: 2.5em;
+        margin-bottom: 30px;
+    }
+
+    .game-board {
+        gap: 20px;
+        padding: 25px;
+        max-width: 600px;
     }
 
     .score-board {
-        gap: 20px;
-        font-size: 1.2em;
+        font-size: 1.5em;
+        gap: 40px;
+        margin-bottom: 30px;
     }
 
     .score-item {
-        padding: 10px 15px;
+        padding: 15px 25px;
     }
 
     .rainbow-btn {
-        font-size: 1.2em;
-        padding: 12px 30px;
+        font-size: 1.5em;
+        padding: 15px 40px;
     }
 
     .sound-btn {
-        font-size: 1.2em;
-        padding: 8px 12px;
-    }
-
-    .mole {
-        background-size: 60%;
-        background-position: center 85%;
-    }
-}
-
-/* 더 작은 모바일 화면 대응 */
-@media (max-width: 480px) {
-    h1 {
         font-size: 1.5em;
-    }
-
-    .game-board {
-        gap: 8px;
-        padding: 10px;
-    }
-
-    .score-board {
-        font-size: 1em;
-    }
-
-    .mole {
-        background-size: 50%;
-        background-position: center 80%;
+        padding: 10px 15px;
     }
 }
 

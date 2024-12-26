@@ -107,13 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 두더지 타입에 따른 효과음 재생
                 if (randomType === 'veryfast') {
-                    playSound(hitSoundVeryfast); // catch.mp3
+                    playSound(hitSoundVeryfast); // 매우 빠른 두더지: catch.mp3
+                } else if (randomType === 'fast') {
+                    playSound(hitSoundNormal); // 빠른 두더지: catch_1.mp3
                 } else {
-                    playSound(hitSoundNormal); // catch_1.mp3
+                    playSound(hitSoundNormal); // 느린 두더지: catch_1.mp3
                 }
 
                 // 맞았을 때 이미지 변경
-                mole.className = 'mole caught';
+                mole.style.backgroundImage = "url('images/mole4_caught.png')";
+                mole.classList.add('caught');
                 
                 setTimeout(() => {
                     if (mole.parentNode) {
