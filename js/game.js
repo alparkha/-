@@ -108,9 +108,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 두더지 타입에 따른 효과음 재생
                 if (randomType === 'veryfast') {
-                    playSound(hitSoundNormal); // catch_1.mp3
-                } else {
                     playSound(hitSoundVeryfast); // catch.mp3
+                } else {
+                    playSound(hitSoundNormal); // catch_1.mp3
                 }
                 
                 setTimeout(() => {
