@@ -124,7 +124,10 @@ h1 {
 .mole.caught {
     background-image: url('../images/mole4_caught.png') !important;
     background-position: center center;
+    background-size: 84%;
     bottom: 8%;
+    left: 50%;
+    transform: translateX(-50%);
     animation: wobble 0.5s ease-in-out;
 }
 
