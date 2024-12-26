@@ -192,21 +192,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 createHitEffect(centerX, centerY, points);
                 
                 // 두더지 타입에 따른 효과음 재생
-                playSound(randomType);  // 직접 타입 이름으로 재생
+                playSound(randomType);
 
                 // 맞았을 때 이미지 변경
                 mole.classList.add('caught');
                 activeMoles--;
+                
+                // 이벤트 리스너 제거 (메모리 누수 방지)
+                hitbox.removeEventListener('mousedown', handleClick);
+                hitbox.removeEventListener('touchstart', handleClick);
                 
                 setTimeout(() => {
                     if (mole.classList.contains('caught')) {
                         mole.classList.remove('visible', 'caught', randomType);
                     }
                 }, 500);
-
-                // 이벤트 리스너 제거
-                hitbox.removeEventListener('mousedown', handleClick);
-                hitbox.removeEventListener('touchstart', handleClick);
             };
 
             // 이벤트 리스너 추가
@@ -216,8 +216,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // 두더지가 사라질 때
             setTimeout(() => {
                 if (mole.classList.contains('visible') && !mole.classList.contains('caught')) {
-                    mole.classList.remove('visible', randomType);
-                    activeMoles--;
+                    mole.classList.add('hiding');
+                    setTimeout(() => {
+                        mole.classList.remove('visible', 'hiding', randomType);
+                        activeMoles--;
+                    }, 150);  // hiding 애니메이션 시간과 동일
                 }
             }, duration);
         }
@@ -267,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 게임 종료 효과음 재생
         if (sfxEnabled) {
-            gameOverSound.volume = 0.4;  // 볼륨 조정
+            gameOverSound.volume = 0.4;
             gameOverSound.play().catch(error => {
                 console.log("Game over sound failed:", error);
             });
@@ -275,7 +278,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 모든 두더지 숨기기
         document.querySelectorAll('.mole').forEach(mole => {
-            mole.classList.remove('visible', 'normal', 'fast', 'veryfast', 'caught');
+            if (mole.classList.contains('visible')) {
+                mole.classList.add('hiding');
+                setTimeout(() => {
+                    mole.classList.remove('visible', 'hiding', 'normal', 'fast', 'veryfast', 'caught');
+                }, 150);
+            }
         });
 
         // 최종 점수 표시
@@ -285,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
             startBtn.textContent = '다시 시작!';
             startBtn.disabled = false;
             startBtn.classList.remove('disabled');
-        }, 500);  // 게임 종료 효과음이 재생된 후 결과 표시
+        }, 500);
     }
 
     startBtn.addEventListener('click', startGame);
