@@ -12,24 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameOverSound = document.getElementById('game-over');
 
     // 사운드 풀 생성
-    const SOUND_POOL_SIZE = 5;  // 각 효과음당 5개의 오디오 객체
-    const soundPool = {
-        normal: Array.from({ length: SOUND_POOL_SIZE }, () => {
-            const audio = new Audio('sounds/catch.mp3');
-            audio.volume = 0.4;  // 볼륨 낮춤
-            return audio;
-        }),
-        fast: Array.from({ length: SOUND_POOL_SIZE }, () => {
-            const audio = new Audio('sounds/catch.mp3');
-            audio.volume = 0.4;  // 볼륨 낮춤
-            return audio;
-        }),
-        veryfast: Array.from({ length: SOUND_POOL_SIZE }, () => {
-            const audio = new Audio('sounds/catch_1.mp3');
-            audio.volume = 0.4;  // 볼륨 낮춤
-            return audio;
-        })
-    };
+    const SOUND_POOL_SIZE = 5;
+    let soundPool = null;  // 사운드 풀을 나중에 초기화
 
     let currentSoundIndex = {
         normal: 0,
@@ -42,16 +26,41 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let timeLeft = 30;
     let bgmPlaying = false;
-    let sfxEnabled = true;  // 추가: sfxEnabled 변수 선언
+    let sfxEnabled = true;
     let activeMoles = 0;
+    let timerInterval = null;
     const MAX_ACTIVE_MOLES = 3;
+
+    // 사운드 풀 초기화 함수
+    function initSoundPool() {
+        soundPool = {
+            normal: Array.from({ length: SOUND_POOL_SIZE }, () => {
+                const audio = new Audio('sounds/catch.mp3');
+                audio.volume = 0.4;
+                return audio;
+            }),
+            fast: Array.from({ length: SOUND_POOL_SIZE }, () => {
+                const audio = new Audio('sounds/catch.mp3');
+                audio.volume = 0.4;
+                return audio;
+            }),
+            veryfast: Array.from({ length: SOUND_POOL_SIZE }, () => {
+                const audio = new Audio('sounds/catch_1.mp3');
+                audio.volume = 0.4;
+                return audio;
+            })
+        };
+    }
 
     // 사운드 컨트롤
     function toggleBGM() {
         bgmPlaying = !bgmPlaying;
         bgmToggle.classList.toggle('muted');
         if (bgmPlaying) {
-            bgm.play();
+            bgm.play().catch(() => {
+                bgmPlaying = false;
+                bgmToggle.classList.add('muted');
+            });
         } else {
             bgm.pause();
         }
@@ -63,38 +72,110 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function playSound(sound) {
-        if (!sfxEnabled) return;
+        if (!sfxEnabled || !soundPool) return;
 
         if (sound === 'normal' || sound === 'fast' || sound === 'veryfast') {
-            // 사운드 풀에서 다음 사용 가능한 오디오 객체 가져오기
             const pool = soundPool[sound];
             const audio = pool[currentSoundIndex[sound]];
             
-            // 재생 중이지 않은 경우에만 재생
             if (audio.paused || audio.ended) {
                 audio.currentTime = 0;
-                let playPromise = audio.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.log("Audio play failed:", error);
-                    });
-                }
-            }
-
-            // 다음 인덱스로 순환
-            currentSoundIndex[sound] = (currentSoundIndex[sound] + 1) % SOUND_POOL_SIZE;
-        } else if (sound) {
-            // 기타 사운드(BGM, 카운트다운 등)는 그대로 재생
-            sound.currentTime = 0;
-            let playPromise = sound.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
+                audio.play().catch(error => {
                     console.log("Audio play failed:", error);
                 });
             }
+
+            currentSoundIndex[sound] = (currentSoundIndex[sound] + 1) % SOUND_POOL_SIZE;
+        } else if (sound) {
+            sound.currentTime = 0;
+            sound.play().catch(error => {
+                console.log("Audio play failed:", error);
+            });
         }
+    }
+
+    function updateTimer() {
+        if (!gameActive || timeLeft <= 0) {
+            clearInterval(timerInterval);
+            if (timeLeft <= 0) {
+                endGame();
+            }
+            return;
+        }
+        timeLeft--;
+        timeDisplay.textContent = timeLeft;
+
+        // 5초 남았을 때 카운트다운 사운드
+        if (timeLeft === 5 && sfxEnabled) {
+            playSound(countdownSound);
+        }
+    }
+
+    function startGame() {
+        if (!gameActive) {
+            // 게임 상태 초기화
+            gameActive = true;
+            score = 0;
+            timeLeft = 30;
+            activeMoles = 0;
+            scoreDisplay.textContent = '0';
+            timeDisplay.textContent = '30';
+            
+            // 사운드 풀 초기화
+            initSoundPool();
+            
+            // 시작 버튼 비활성화
+            startBtn.disabled = true;
+            startBtn.classList.add('disabled');
+            
+            // 타이머 시작
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // 두더지 출현 시작
+            showMole();
+        }
+    }
+
+    function endGame() {
+        gameActive = false;
+        clearTimeout(timeoutId);
+        clearInterval(timerInterval);
+        
+        // 게임 종료 효과음 재생
+        if (sfxEnabled && gameOverSound) {
+            gameOverSound.volume = 0.4;
+            gameOverSound.play().catch(error => {
+                console.log("Game over sound failed:", error);
+            });
+        }
+
+        // 모든 두더지 숨기기
+        document.querySelectorAll('.mole').forEach(mole => {
+            if (mole.classList.contains('visible')) {
+                mole.classList.add('hiding');
+                setTimeout(() => {
+                    mole.classList.remove('visible', 'hiding', 'normal', 'fast', 'veryfast', 'caught');
+                }, 150);
+            }
+        });
+
+        // 최종 점수 표시
+        const finalScore = score;
+        setTimeout(() => {
+            alert(`게임 종료! 최종 점수: ${finalScore}점`);
+            startBtn.textContent = '다시 시작!';
+            startBtn.disabled = false;
+            startBtn.classList.remove('disabled');
+            
+            // 게임 상태 완전 초기화
+            timeLeft = 30;
+            timeDisplay.textContent = '30';
+            activeMoles = 0;
+            
+            // 사운드 풀 초기화
+            initSoundPool();
+        }, 500);
     }
 
     bgmToggle.addEventListener('click', toggleBGM);
@@ -228,73 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 다음 두더지 출현 (0.5~1초 사이)
         timeoutId = setTimeout(showMole, Math.random() * 500 + 500);
     };
-
-    function startGame() {
-        if (!gameActive) {
-            gameActive = true;
-            score = 0;
-            timeLeft = 30;
-            scoreDisplay.textContent = score;
-            timeDisplay.textContent = timeLeft;
-            startBtn.disabled = true;
-            startBtn.textContent = '게임 진행 중...';
-
-            // 배경음악 초기화 및 재생
-            bgm.currentTime = 0;
-            if (bgmPlaying) {
-                bgm.play();
-            }
-
-            timer = setInterval(updateTimer, 1000);
-            showMole();
-        }
-    }
-
-    function updateTimer() {
-        timeLeft--;
-        timeDisplay.textContent = timeLeft;
-
-        // 5초 카운트다운 시작
-        if (timeLeft <= 5) {
-            playSound(countdownSound);
-        }
-
-        if (timeLeft <= 0) {
-            endGame();
-        }
-    }
-
-    function endGame() {
-        gameActive = false;
-        clearTimeout(timeoutId);
-        
-        // 게임 종료 효과음 재생
-        if (sfxEnabled) {
-            gameOverSound.volume = 0.4;
-            gameOverSound.play().catch(error => {
-                console.log("Game over sound failed:", error);
-            });
-        }
-
-        // 모든 두더지 숨기기
-        document.querySelectorAll('.mole').forEach(mole => {
-            if (mole.classList.contains('visible')) {
-                mole.classList.add('hiding');
-                setTimeout(() => {
-                    mole.classList.remove('visible', 'hiding', 'normal', 'fast', 'veryfast', 'caught');
-                }, 150);
-            }
-        });
-
-        // 최종 점수 표시
-        const finalScore = score;
-        setTimeout(() => {
-            alert(`게임 종료! 최종 점수: ${finalScore}점`);
-            startBtn.textContent = '다시 시작!';
-            startBtn.disabled = false;
-            startBtn.classList.remove('disabled');
-        }, 500);
-    }
 
     startBtn.addEventListener('click', startGame);
     
